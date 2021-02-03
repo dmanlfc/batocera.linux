@@ -481,6 +481,9 @@ config BR2_PACKAGE_BATOCERA_ARCADE_SYSTEMS
 		# Standalone Sega Model 3 emulator
 		select BR2_PACKAGE_SUPERMODEL		      if BR2_PACKAGE_BATOCERA_TARGET_X86_64
 
+                # Standalone Sega Model 2 emulator
+		select BR2_PACKAGE_MODEL2EMU		      if BR2_PACKAGE_BATOCERA_TARGET_X86_64
+
 		# RetroArch MAME derivatives
 		select BR2_PACKAGE_LIBRETRO_MAME2003_PLUS     # ALL
 		select BR2_PACKAGE_LIBRETRO_IMAME             if BR2_PACKAGE_BATOCERA_RPI_VCORE # IMAME
