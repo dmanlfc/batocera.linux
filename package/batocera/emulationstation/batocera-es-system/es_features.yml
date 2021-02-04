@@ -5,7 +5,7 @@ libretro:
   features: [ratio, smooth, shaders, pixel_perfect, decoration, game_translation]
   cfeatures:
     gfxbackend:
-      archs_include: [x86, x86_64, rpi4]
+      archs_include: [x86, x86_64, rpi4, odroidgoa]
       prompt:      GRAPHICS BACKEND
       description: Choose your graphics rendering
       choices:
@@ -2150,7 +2150,7 @@ dolphin:
   features: [ratio, internal_resolution]
   cfeatures:
         gfxbackend:
-            archs_include: [x86, x86_64, rpi4]
+            archs_include: [x86, x86_64, rpi4, odroidgoa]
             prompt:      GRAPHICS BACKEND
             description: Choose your graphics rendering
             choices:
@@ -2273,7 +2273,7 @@ duckstation:
   features: [ratio, fullboot, internal_resolution]
   cfeatures:
         gfxbackend:
-            archs_include: [x86, x86_64, rpi4]
+            archs_include: [x86, x86_64, rpi4, odroidgoa]
             prompt:      GRAPHICS BACKEND
             description: Choose your graphics rendering
             choices:
@@ -2365,6 +2365,14 @@ openbor:
 pcsx2:
   features: [ratio, fullboot, internal_resolution]
   cfeatures:
+        multitap:
+            prompt:      ENABLE MULTITAP
+            description: Allowing up to 8 players support in games
+            choices:
+                "Off":              disabled
+                "Port1":            port1
+                "Port2":            port2
+                "Port1+2":          port12
         anisotropic_filtering:
             prompt:      ANISOTROPIC FILTERING
             description: Enhance the quality with on perspective textures
@@ -2503,7 +2511,7 @@ mame:
                 "Accel":         accel
                 "OpenGL":        opengl
         bgfxbackend:
-            archs_include: [x86, x86_64, rpi4]
+            archs_include: [x86, x86_64, rpi4, odroidgoa]
             prompt:      BGFX BACKEND
             description: Choose your graphics API
             choices:

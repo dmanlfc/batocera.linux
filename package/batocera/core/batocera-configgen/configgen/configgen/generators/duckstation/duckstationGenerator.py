@@ -58,6 +58,11 @@ class DuckstationGenerator(Generator):
         else:
             settings.set("GPU", "Renderer", "OpenGL")
 
+        # console
+        if not settings.has_section("Console"):
+            settings.add_section("Console")
+        settings.set("Console", "Region", "Auto")
+            
         # internal resolution
         if system.isOptSet('internalresolution'):
             settings.set("GPU", "ResolutionScale", system.config["internalresolution"])
@@ -146,7 +151,7 @@ def configurePads(settings, playersControllers):
         for mapping in mappings:
             if mappings[mapping] in pad.inputs:
                 settings.set(section, mapping, "Controller" + str(pad.index) + "/" + input2definition(pad.inputs[mappings[mapping]]))
-    nplayer = nplayer + 1
+        nplayer = nplayer + 1
 
 def input2definition(input):
     if input.type == "button":

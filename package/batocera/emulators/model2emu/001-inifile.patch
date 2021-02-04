@@ -1,5 +1,7 @@
---- EMULATOR.INI	2014-01-01 13:06:16.000000000 +1000
-+++ EMULATOR.INI	2021-01-30 20:02:08.445790247 +1000
+diff --git a/EMULATOR.INI b/EMULATOR.INI
+index 3c39c8b..b7e7d29 100644
+--- a/EMULATOR.INI
++++ b/EMULATOR.INI
 @@ -6,7 +6,7 @@
  ;ROMS subdirectory in the same folder than the exe is always scanned when searching for roms
  ;(remove the ; form Dir1)
@@ -9,7 +11,7 @@
  
  
  [Renderer]
-@@ -36,10 +36,10 @@
+@@ -36,10 +36,10 @@ FSAA=0				;Enable full screen antialiasing in Direct3D
  
  
  ;These options are configured from menus so don't touch

@@ -112,7 +112,7 @@ amigacd32:
   manufacturer: Commodore
   release: 1994
   hardware: console
-  extensions: [iso, cue, lha]
+  extensions: [iso, cue, lha, chd]
   emulators:
     fsuae:
       CD32:   { requireAnyOf: [BR2_PACKAGE_FSUAE]         }
@@ -126,7 +126,7 @@ amigacdtv:
   manufacturer: Commodore
   release: 1991
   hardware: console
-  extensions: [bin, cue, iso]
+  extensions: [bin, cue, iso, chd]
   emulators:
     fsuae:
       CDTV:   { requireAnyOf: [BR2_PACKAGE_FSUAE]         }
@@ -1531,7 +1531,7 @@ fmtowns:
   manufacturer: Fujistu
   release: 1987
   hardware: computer
-  extensions: [bin, m3u]
+  extensions: [bin, m3u, cue, d88, d77, xdf, iso]
   platform:   fmtowns
   emulators:
     tsugaru:
@@ -1684,11 +1684,19 @@ imageviewer:
   hardware: system
   extensions: [jpg, jpeg, png, bmp, psd, tga, gif, hdr, pic, ppm, pgm, mkv, pdf, mp4, avi]
   path:       /userdata/screenshots
-  platform:   ignore
-  emulators:
-    libretro:
-      imageviewer: { requireAnyOf: [] }
-      
+  platform:   imageviewer
+  force:      True
+
+library:
+  name:       Library
+  manufacturer: Misc. System
+  release:
+  hardware: system
+  extensions: [jpg, jpeg, png, bmp, psd, tga, gif, hdr, pic, ppm, pgm, mkv, pdf, mp4, avi, cbz]
+  path:       /userdata/library
+  platform:   imageviewer
+  force:      True
+
 model3:
   name:       Sega Model 3
   manufacturer: Sega

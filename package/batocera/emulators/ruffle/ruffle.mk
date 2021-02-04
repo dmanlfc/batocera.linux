@@ -3,8 +3,8 @@
 # RUFFLE
 #
 ################################################################################
-# Version.: Commits on Jan 28, 2021
-RUFFLE_VERSION = 5e0527c59944d5888128c63f37d23880fdb0c6ff
+# Version.: Commits on Feb 1, 2021
+RUFFLE_VERSION = 07ab770d4ce63ce677c3a8f4852057b20c92bb58
 RUFFLE_SITE = $(call github,ruffle-rs,ruffle,$(RUFFLE_VERSION))
 RUFFLE_LICENSE = GPLv2
 RUFFLE_DEPENDENCIES = host-rustc openssl
@@ -38,7 +38,7 @@ define RUFFLE_INSTALL_TARGET_CMDS
 
 	# evmap config
 	mkdir -p $(TARGET_DIR)/usr/share/evmapy
-	cp $(BR2_EXTERNAL_BATOCERA_PATH)/package/batocera/emulators/ruffle/ruffle.keys $(TARGET_DIR)/usr/share/evmapy
+	cp $(BR2_EXTERNAL_BATOCERA_PATH)/package/batocera/emulators/ruffle/flash.ruffle.keys $(TARGET_DIR)/usr/share/evmapy
 endef
 
 $(eval $(generic-package))
