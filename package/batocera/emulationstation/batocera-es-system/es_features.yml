@@ -4677,3 +4677,6 @@ abuse:
 
 cdogs:
   features: [padtokeyboard]
+
+openmsx:
+  features: [padtokeyboard]

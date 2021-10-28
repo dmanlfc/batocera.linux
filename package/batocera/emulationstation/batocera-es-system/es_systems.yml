@@ -1145,6 +1145,8 @@ msx1:
     libretro:
       bluemsx: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_BLUEMSX] }
       fmsx: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FMSX] }
+    openmsx:
+      openmsx: { requireAnyOf: [BR2_PACKAGE_OPENMSX] }
   comment_en: |
     ## BIOS ##
 
@@ -1206,6 +1208,8 @@ msx2:
     libretro:
       bluemsx: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_BLUEMSX] }
       fmsx: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FMSX] }
+    openmsx:
+      openmsx: { requireAnyOf: [BR2_PACKAGE_OPENMSX] }
   comment_en: |
     ## BIOS ##
 
