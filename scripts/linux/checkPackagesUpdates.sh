@@ -127,6 +127,7 @@ PACKAGES_EMULATORS="amiberry
 					python-pygame2
 					rpcs3
 					ruffle
+					ryujinx
 					scummvm
 					sdlpop
 					solarus-engine

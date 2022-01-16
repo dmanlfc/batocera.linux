@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if test -z "${DISPLAY}"
+then
+    export DISPLAY=:0.0
+fi
+
+# add some logic to check the custom folder is created
+mkdir /userdata/system/configs/ryujinx
+
+XDG_CONFIG_HOME="/userdata/system/configs" XDG_DATA_HOME="/userdata/saves/ryujinx" GDK_BACKEND="x11" /usr/ryujinx/Ryujinx -r /userdata/system/configs/ryujinx
+#QT_QPA_PLATFORM="xcb" 
+#LD_LIBRARY_PATH=/usr/ryujinx 
+
+exit 0

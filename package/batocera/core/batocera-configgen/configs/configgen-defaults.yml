@@ -380,8 +380,8 @@ supervision:
   emulator: libretro
   core:     potator
 switch:
-  emulator: yuzu
-  core:     yuzu
+  emulator: ryujinx
+  core:     ryujinx
 
 # T-Z
 

@@ -5265,3 +5265,47 @@ demul:
             choices:
                 "Off": 0
                 "On":  1
+
+ryujinx:
+  features: [videomode, padtokeyboard, decoration]
+  shared: [hud]
+  cfeatures:
+        ryujinxRatio:
+            prompt:      ASPECT RATIO
+            description: Adjust the games aspect ratio.
+            choices:
+                "4:3":                   "Fixed4x3"
+                "16:9 (Default)":        "Fixed16x9"
+                "16:10":                 "Fixed16x10"
+                "21:9":                  "Fixed21x9"
+                "32:9":                  "Fixed32x9"
+                "Stretch to Fit Window": "Stretched"
+        ryujinxVSync:
+            prompt:      VSYNC
+            description: Enable or disable vsync.
+            choices:
+                "Off":          False
+                "On (Default)": True
+        ryujinxFiltering:
+            prompt:      ANISOTROPIC FILTERING
+            description: Adjust the amount of anisotropic filtering.
+            choices:
+                "Auto (Default)": -1
+                "2x":             2
+                "4x":             4
+                "8x":             8
+                "16x":            16
+        ryujinxScale:
+            prompt:      RESOLUTION SCALE
+            description: Adjust the rending resolution.
+            choices:
+                "Native (720p/1080p) - Default": 1
+                "2x (1440p/2160p)":              2
+                "3x (2160p/3240p)":              3
+                "4x (2880p/4320p)":              4
+        ryujinxAudio:
+            prompt:      AUDIO BACKEND
+            description: Choose the desired audio backend.
+            choices:
+                "SDL2 (Stereo) - Default": "SDL2"
+                "OpenAL (Surround)":       "OpenAl"

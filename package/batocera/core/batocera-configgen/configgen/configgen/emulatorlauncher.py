@@ -67,6 +67,7 @@ from generators.cdogs.cdogsGenerator import CdogsGenerator
 from generators.hcl.hclGenerator import HclGenerator
 from generators.openmsx.openmsxGenerator import OpenmsxGenerator
 from generators.demul.demulGenerator import DemulGenerator
+from generators.ryujinx.ryujinxGenerator import RyujinxGenerator
 #from generators.play.playGenerator import PlayGenerator
 
 import controllersConfig as controllers
@@ -140,6 +141,7 @@ generators = {
     'hcl': HclGenerator(),
     'openmsx': OpenmsxGenerator(),
     'demul': DemulGenerator(),
+    'ryujinx': RyujinxGenerator(),
     #'play': PlayGenerator(),
 }
 
