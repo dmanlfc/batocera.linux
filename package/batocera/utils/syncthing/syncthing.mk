@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-SYNCTHING_VERSION = v1.18.6
+SYNCTHING_VERSION = v1.19.1
 SYNCTHING_SITE = $(call github,syncthing,syncthing,$(SYNCTHING_VERSION))
 SYNCTHING_LICENSE = MPLv2
 SYNCTHING_LICENSE_FILES = LICENSE
@@ -24,6 +24,7 @@ SYNCTHING_TARGET_ENV = \
 	CGO_ENABLED=1 \
 	GOCACHE="$(HOST_GO_TARGET_CACHE)" \
 	GOMODCACHE="$(@D)" \
+	GOFLAGS="-modcacherw" \
 	CC_FOR_TARGET="$(TARGET_CC)" \
 	CXX_FOR_TARGET="$(TARGET_CXX)"
 
@@ -32,10 +33,9 @@ define SYNCTHING_BUILD_CMDS
 endef
 
 define SYNCTHING_INSTALL_TARGET_CMDS
-	mkdir -p $(TARGET_DIR)/usr/bin
 	mkdir -p $(TARGET_DIR)/etc/init.d
 	$(INSTALL) -D $(@D)/syncthing $(TARGET_DIR)/usr/bin/syncthing
-	$(INSTALL) -Dm755 $(BR2_EXTERNAL_BATOCERA_PATH)/package/batocera/utils/syncthing/S27syncthing       $(TARGET_DIR)/etc/init.d/
+	$(INSTALL) -Dm755 $(BR2_EXTERNAL_BATOCERA_PATH)/package/batocera/utils/syncthing/S27syncthing $(TARGET_DIR)/etc/init.d/
 endef
 
 $(eval $(golang-package))
