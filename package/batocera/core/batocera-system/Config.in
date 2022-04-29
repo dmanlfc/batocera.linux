@@ -1041,6 +1041,9 @@ config BR2_PACKAGE_BATOCERA_CONSOLE_SYSTEMS
 	# Uzebox
 	select BR2_PACKAGE_LIBRETRO_UZEM                if !BR2_PACKAGE_BATOCERA_TARGET_CHA # speed issue on weak SBCs
 
+	# Symbian OS
+	select BR2_PACKAGE_EKA2L1
+
 	help
 		All avaible systems for the selected architecture
 
