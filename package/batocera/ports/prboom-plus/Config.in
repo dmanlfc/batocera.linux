@@ -1,0 +1,15 @@
+config BR2_PACKAGE_PRBOOM_PLUS
+    bool "prboom-plus"
+    select BR2_PACKAGE_SDL2
+    select BR2_PACKAGE_SDL2_NET
+    select BR2_PACKAGE_SDL2_MIXER
+    select BR2_PACKAGE_SDL2_IMAGE
+    select BR2_PACKAGE_FLUIDSYNTH
+    select BR2_PACKAGE_LIBGLU
+    select BR2_PACKAGE_LIBMAD
+    select BR2_PACKAGE_LIBVORBIS
+    select BR2_PACKAGE_PCRE
+    help
+      PrBoom+ is a Doom source port developed from the original PrBoom project.
+
+	    https://github.com/coelckers/prboom-plus
