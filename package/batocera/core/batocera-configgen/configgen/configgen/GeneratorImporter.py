@@ -283,6 +283,10 @@ def getGenerator(emulator):
         from generators.pyxel.pyxelGenerator import PyxelGenerator
         return PyxelGenerator()
 
+    if emulator == 'yabasanshiro':
+        from generators.yabasanshiro.yabasanshiroGenerator import YabasanshiroGenerator
+        return YabasanshiroGenerator()
+
     #if emulator == 'play':
     #from generators.play.playGenerator import PlayGenerator
     #return PlayGenerator(),
