@@ -1,0 +1,9 @@
+config BR2_PACKAGE_AALIB
+        bool "aalib"
+        select BR2_PACKAGE_GPM
+        select BR2_PACKAGE_XLIB_LIBX11
+        select BR2_PACKAGE_XLIB_LIBXT
+        help
+          A portable ASCII art graphics library.
+
+          http://aa-project.sourceforge.net/aalib/

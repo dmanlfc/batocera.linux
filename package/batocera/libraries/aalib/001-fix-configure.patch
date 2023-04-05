@@ -1,0 +1,40 @@
+diff --git a/configure b/configure
+index a103cf0715..832b70444d
+--- a/configure
++++ b/configure
+@@ -3128,7 +3128,7 @@ fi
+ 	      echo "$ac_t""Found slang on /usr/include/slang/slang.h" 1>&6
+ 	      AALIB_LIBS="$AALIB_LIBS  -lslang"
+  	      LIBS="$LIBS "
+-	      CFLAGS="$CFLAGS -I/usr/include/slang "
++	      CFLAGS="$CFLAGS"
+               slang_driver=true
+ 	      search_slang=false
+ 	      cat >> confdefs.h <<\EOF
+@@ -3362,7 +3362,7 @@ fi
+ 	      echo "$ac_t""Found ncurses on /usr/include/ncurses.h" 1>&6
+ 	      AALIB_LIBS="$AALIB_LIBS  -lncurses"
+  	      LIBS="$LIBS "
+-	      CFLAGS="$CFLAGS -I/usr/include/ncurses "
++	      CFLAGS="$CFLAGS"
+ 	      search_ncurses=false
+               curses_driver=true
+ 	      screen_manager="ncurses on /usr/include"
+@@ -3435,7 +3435,7 @@ fi
+ 	      echo "$ac_t""Found ncurses on /usr/include/ncurses/ncurses.h" 1>&6
+ 	      AALIB_LIBS="$AALIB_LIBS  -lncurses"
+  	      LIBS="$LIBS "
+-	      CFLAGS="$CFLAGS -I/usr/include/ncurses"
++	      CFLAGS="$CFLAGS"
+ 	      search_ncurses=false
+               curses_driver=true
+ 	      screen_manager="ncurses on /usr/include/ncurses"
+@@ -3729,7 +3729,7 @@ fi
+ 	      echo "$ac_t""Found ncurses on /usr/include/ncurses/curses.h" 1>&6
+ 	      AALIB_LIBS="$AALIB_LIBS  -lncurses"
+  	      LIBS="$LIBS "
+-	      CFLAGS="$CFLAGS -I/usr/include/ncurses -DRENAMED_NCURSES"
++	      CFLAGS="$CFLAGS -DRENAMED_NCURSES"
+ 	      search_ncurses=false
+               curses_driver=true
+ 	      screen_manager="renamed ncurses on /usr/include/ncurses"

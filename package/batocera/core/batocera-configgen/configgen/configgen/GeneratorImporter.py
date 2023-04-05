@@ -283,6 +283,10 @@ def getGenerator(emulator):
         from generators.pyxel.pyxelGenerator import PyxelGenerator
         return PyxelGenerator()
 
+    if emulator == 'zesarux':
+        from generators.zesarux.zesaruxGenerator import ZesaruxGenerator
+        return ZesaruxGenerator()
+
     #if emulator == 'play':
     #from generators.play.playGenerator import PlayGenerator
     #return PlayGenerator(),

@@ -310,6 +310,7 @@ menu "Emulators"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/ikemen/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/bigpemu/Config.in"
     source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/python-pyxel/Config.in"
+    source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/emulators/zesarux/Config.in"
   endmenu
 
   menu "WINE"
@@ -481,6 +482,7 @@ menu "Libraries"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/python-pyqt5-sip/Config.in"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/python-hidapi/Config.in"
   source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/libliftoff/Config.in"
+  source "$BR2_EXTERNAL_BATOCERA_PATH/package/batocera/libraries/aalib/Config.in"
 endmenu
 
 endmenu

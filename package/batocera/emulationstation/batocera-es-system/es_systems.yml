@@ -1713,6 +1713,8 @@ zxspectrum:
   emulators:
     libretro:
       fuse: { requireAnyOf: [BR2_PACKAGE_LIBRETRO_FUSE] }
+    zesarux:
+      zesarux: { requireAnyOf: [BR2_PACKAGE_ZESARUX] }
   comment_en: |
     ## Input Devices ##
 
