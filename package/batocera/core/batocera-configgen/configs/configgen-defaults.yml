@@ -435,6 +435,9 @@ pcenginecd:
 pcfx:
   emulator: libretro
   core:     pcfx
+pdark:
+  emulator: pdark
+  core:     pdark
 pdp1:
   emulator: libretro
   core:     mame

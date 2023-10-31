@@ -4995,3 +4995,17 @@ iortcw:
     Trouvez la documentation ici: https://wiki.batocera.org/systems:iortcw
   comment_br: |
     Para mais informações: https://wiki.batocera.org/systems:iortcw
+
+pdark:
+  name: Perfect Dark
+  manufacturer: Ports
+  release: 2000
+  hardware: port
+  extensions: [z64]
+  platform: pc
+  group: ports
+  emulators:
+    pdark:
+      pdark: { requireAnyOf: [BR2_PACKAGE_PERFECT_DARK] }
+  comment_en: |
+    TODO

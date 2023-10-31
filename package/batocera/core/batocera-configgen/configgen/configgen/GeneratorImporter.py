@@ -330,6 +330,10 @@ def getGenerator(emulator):
     if emulator == "iortcw":
         from generators.iortcw.iortcwGenerator import IORTCWGenerator
         return IORTCWGenerator()
+    
+    if emulator == 'pdark':
+        from generators.pdark.pdarkGenerator import PerfectDarkGenerator
+        return PerfectDarkGenerator()
 
     if emulator == 'sh':
         from generators.sh.shGenerator import ShGenerator
