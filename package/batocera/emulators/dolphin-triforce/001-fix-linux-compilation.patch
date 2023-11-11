@@ -1,0 +1,335 @@
+diff --git a/Source/Core/Core/HW/DVD/AMBaseboard.cpp b/Source/Core/Core/HW/DVD/AMBaseboard.cpp
+index c850756fc8..16ec9f27b2 100644
+--- a/Source/Core/Core/HW/DVD/AMBaseboard.cpp
++++ b/Source/Core/Core/HW/DVD/AMBaseboard.cpp
+@@ -56,6 +56,17 @@
+ #include <fcntl.h>
+ #include <netinet/in.h>
+ #include <sys/socket.h>
++#include <errno.h>
++#include <unistd.h>
++#include <arpa/inet.h>
++#endif
++
++#ifndef SOCKET_ERROR
++    #ifdef _WIN32
++        #define SOCKET_ERROR -1
++    #else
++        #define SOCKET_ERROR EWOULDBLOCK
++    #endif
+ #endif
+ 
+ unsigned char JPEG[2712] =
+@@ -960,7 +971,12 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+             u32 len_off   = media_buffer_in_32[4] - NetworkCommandAddress;
+ 
+             struct sockaddr* addr = (struct sockaddr*)(network_command_buffer + addr_off);
+-            int* len              = (int*)(network_command_buffer + len_off);
++            #ifdef _WIN32
++                int* len              = (int*)(network_command_buffer + len_off);
++            #else
++                socklen_t addrlen = sizeof(struct sockaddr);
++                socklen_t* len = &addrlen;
++            #endif
+ 
+             int ret = 0;
+             int err = 0;
+@@ -971,12 +987,21 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+               ret = accept(fd, addr, len);
+               if (ret == SOCKET_ERROR)
+               {
+-                err = WSAGetLastError();
+-                if (err == WSAEWOULDBLOCK)
+-                {
+-                  Sleep(1);
+-                  continue;
+-                }
++                #ifdef _WIN32
++                    err = WSAGetLastError();
++                    if (err == WSAEWOULDBLOCK)
++                    {
++                      Sleep(1);
++                      continue;
++                    }
++                #else
++                    err = errno;
++                    if (err == EWOULDBLOCK)
++                    {
++                      sleep(1);
++                      continue;
++                    }
++                #endif
+               }
+               else
+               {
+@@ -985,7 +1010,7 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+                 u_long val = 1;
+                 ioctlsocket(fd, FIONBIO, &val);
+ #else
+-                int flags = cntl(fd, F_GETFL);
++                int flags = fcntl(fd, F_GETFL);
+                 fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+ #endif
+                 break;
+@@ -1015,14 +1040,24 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+             addr.sin_addr.s_addr = INADDR_ANY;
+ 
+ 						int ret = bind( fd, (const sockaddr*)&addr, len );
+-						int err = WSAGetLastError();
++            #ifdef _WIN32
++                int err = WSAGetLastError();
++            #else
++                int err = errno;
++            #endif
+ 
+             //if (ret < 0 )
+             //  PanicAlertFmt("Socket Bind Failed with{0}", err);
+ 
+-						NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM: bind( {}, ({},{:08x}:{}), {} ):{} ({})\n", fd,
++						#ifdef _WIN32
++                NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM: bind( {}, ({},{:08x}:{}), {} ):{} ({})\n", fd,
+                            addr.sin_family, addr.sin_addr.S_un.S_addr,
+                            Common::swap16(addr.sin_port), len, ret, err);
++            #else
++                NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM: bind( {}, ({},{:08x}:{}), {} ):{} ({})\n", fd,
++                           addr.sin_family, addr.sin_addr.s_addr,
++                           Common::swap16(addr.sin_port), len, ret, err);
++            #endif
+ 
+             media_buffer_out_32[1] = ret;
+ 					} break;
+@@ -1030,7 +1065,11 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+ 					{
+             u32 fd = media_buffer_in_32[2];
+ 
+-            int ret = closesocket(fd);
++            #ifdef _WIN32
++                int ret = closesocket(fd);
++            #else
++                int ret = close(fd);
++            #endif
+ 
+             NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM: closesocket( {} ):{}\n", fd, ret);
+ 
+@@ -1050,17 +1089,32 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+ 						memcpy( (void*)&addr, network_command_buffer + off , sizeof(struct sockaddr_in) );
+ 
+             // CyCraft Connect IP, change to localhost
+-            if (addr.sin_addr.S_un.S_addr == 1863035072)
+-            {
+-              addr.sin_addr.S_un.S_addr = 0x7F000001;
+-            }
++            #ifdef _WIN32
++                if (addr.sin_addr.S_un.S_addr == 1863035072)
++                {
++                  addr.sin_addr.S_un.S_addr = 0x7F000001;
++                }
++            #else
++                if (addr.sin_addr.s_addr == 1863035072)
++                {
++                  addr.sin_addr.s_addr = 0x7F000001;
++                }
++            #endif
+ 
+             // NAMCO Camera
+-            if (addr.sin_addr.S_un.S_addr == 0xc0a81d68)
+-            {
+-              addr.sin_addr.S_un.S_addr = 0x7F000001;
+-              addr.sin_family = htons(AF_INET); // fix family?
+-            }
++            #ifdef _WIN32
++                if (addr.sin_addr.S_un.S_addr == 0xc0a81d68)
++                {
++                  addr.sin_addr.S_un.S_addr = 0x7F000001;
++                  addr.sin_family = htons(AF_INET); // fix family?
++                }
++            #else
++                if (addr.sin_addr.s_addr == 0xc0a81d68)
++                {
++                  addr.sin_addr.s_addr = 0x7F000001;
++                  addr.sin_family = htons(AF_INET); // fix family?
++                }
++            #endif
+ 
+             addr.sin_family = Common::swap16(addr.sin_family);
+             *(u32*)(&addr.sin_addr) = Common::swap32(*(u32*)(&addr.sin_addr));
+@@ -1073,17 +1127,31 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+                 break;
+               if ( ret == SOCKET_ERROR )
+               {
+-                err = WSAGetLastError();
+-                if (err == WSAEWOULDBLOCK || err == WSAEALREADY )
+-                {
+-                  Sleep(1);
+-                  continue;
+-                }
+-                if (err == WSAEISCONN)
+-                {
+-                  ret = 0;
+-                  break;
+-                }
++                #ifdef _WIN32
++                    err = WSAGetLastError();
++                    if (err == WSAEWOULDBLOCK || err == WSAEALREADY )
++                    {
++                      Sleep(1);
++                      continue;
++                    }
++                    if (err == WSAEISCONN)
++                    {
++                      ret = 0;
++                      break;
++                    }
++                #else
++                    err = errno;
++                    if (err == EWOULDBLOCK || err == EALREADY )
++                    {
++                      sleep(1);
++                      continue;
++                    }
++                    if (err == EISCONN)
++                    {
++                      ret = 0;
++                      break;
++                    }
++                #endif
+               }
+             } 
+ 
+@@ -1164,20 +1232,37 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+ 
+               if (ret == SOCKET_ERROR)
+               {
+-                err = WSAGetLastError();
+-                if (err == WSAEWOULDBLOCK)
+-                {
+-                  Sleep(1);
+-                  continue;
+-                }
+-                break;
++                #ifdef _WIN32
++                    err = WSAGetLastError();
++                    if (err == WSAEWOULDBLOCK)
++                    {
++                      Sleep(1);
++                      continue;
++                    }
++                    break;
++                #else
++                    err = errno;
++                    if (err == EWOULDBLOCK)
++                    {
++                      sleep(1);
++                      continue;
++                    }
++                    break;
++                #endif
+               }
+             }
+ 
+-            if( err == WSAEWOULDBLOCK )
+-            {
+-              ret = 0;
+-            }
++            #ifdef _WIN32
++                if( err == WSAEWOULDBLOCK )
++                {
++                  ret = 0;
++                }
++            #else
++                if( err == EWOULDBLOCK )
++                {
++                  ret = 0;
++                }
++            #endif
+ 
+             NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM: recv( {}, 0x{:08x}, {} ):{} {}\n", fd, off, len, ret, err);
+ 
+@@ -1206,7 +1291,11 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+             }
+ 
+             ret = send(fd, (char*)(network_buffer + offset), len, 0);
+-            int err = WSAGetLastError();
++            #ifdef _WIN32
++                int err = WSAGetLastError();
++            #else
++                int err = errno;
++            #endif
+ 
+ 						NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM: send( {}, 0x{:08x}, {} ): {} {}\n", fd, offset, len, ret ,err );
+ 
+@@ -1218,14 +1307,18 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+             u32 af   = media_buffer_in_32[2];
+             u32 type = media_buffer_in_32[3];
+ 
++#ifdef WIN32
+ 						SOCKET fd = socket(af, type, IPPROTO_TCP);
++#else
++            int fd = socket(af, type, IPPROTO_TCP);
++#endif
+ 
+             // Set socket non-blocking
+ #ifdef WIN32
+             u_long val = 1;
+             ioctlsocket(fd, FIONBIO, &val);
+ #else
+-            int flags = cntl( fd, F_GETFL );
++            int flags = fcntl( fd, F_GETFL );
+             fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+ #endif
+ 
+@@ -1272,7 +1365,11 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+ 
+             int ret = select( nfds, readfds, writefds, nullptr, &timeout );
+ 
+-            int err = WSAGetLastError();
++            #ifdef _WIN32
++                int err = WSAGetLastError();
++            #else
++                int err = errno;
++            #endif
+ 
+ 						NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM: select( 0x{:08x} 0x{:08x} 0x{:08x} ):{} {} \n", nfds, NOffsetA, NOffsetB, ret, err);
+ 						//hexdump( NetworkCMDBuffer, 0x40 );
+@@ -1285,7 +1382,11 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+ 					// setsockopt
+ 					case 0x40E:
+ 					{ 
+-						SOCKET s            = (SOCKET)(media_buffer_in_32[2]);
++						#ifdef _WIN32
++                SOCKET s        = (SOCKET)(media_buffer_in_32[2]);
++            #else
++                int s           = static_cast<int>(media_buffer_in_32[2]);
++            #endif
+             int level           =    (int)(media_buffer_in_32[3]);
+             int optname         =    (int)(media_buffer_in_32[4]);
+             const char* optval  =  (char*)(network_command_buffer + media_buffer_in_32[5] - NetworkCommandAddress );
+@@ -1293,7 +1394,11 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+ 
+ 						int ret = setsockopt( s, level, optname, optval, optlen );
+ 
+-						int err = WSAGetLastError();
++            #ifdef _WIN32
++                int err = WSAGetLastError();
++            #else
++                int err = errno;
++            #endif
+ 
+ 						NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM: setsockopt( {:d}, {:04x}, {}, {:p}, {} ):{:d} ({})\n", s, level, optname, optval, optlen, ret, err);
+ 
+@@ -1365,8 +1470,13 @@ u32 ExecuteCommand(u32* DICMDBUF, u32 Address, u32 Length)
+ 					case 0x606: // Setup link?
+ 					{
+             struct sockaddr_in addra, addrb;
+-            addra.sin_addr.S_un.S_addr = media_buffer_in_32[4];
+-            addrb.sin_addr.S_un.S_addr = media_buffer_in_32[5];
++            #ifdef _WIN32
++                addra.sin_addr.S_un.S_addr = media_buffer_in_32[4];
++                addrb.sin_addr.S_un.S_addr = media_buffer_in_32[5];
++            #else
++                addra.sin_addr.s_addr = media_buffer_in_32[4];
++                addrb.sin_addr.s_addr = media_buffer_in_32[5];
++            #endif
+ 
+             NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM: 0x606:");
+             NOTICE_LOG_FMT(DVDINTERFACE, "GC-AM:  Size: ({}) ",   media_buffer_in_16[2] );                 // size

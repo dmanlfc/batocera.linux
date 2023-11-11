@@ -1,0 +1,12 @@
+diff --git a/Source/Core/DolphinQt/Resources.h b/Source/Core/DolphinQt/Resources.h
+index 67ffc23d4d..bf7abe9b8b 100644
+--- a/Source/Core/DolphinQt/Resources.h
++++ b/Source/Core/DolphinQt/Resources.h
+@@ -3,6 +3,7 @@
+ 
+ #pragma once
+ 
++#include <QIcon>
+ #include <QList>
+ #include <QPixmap>
+ #include <string_view>

@@ -16,28 +16,37 @@ eslog = get_logger(__name__)
 def generateControllerConfig(system, playersControllers, rom):
 
     generateHotkeys(playersControllers)
-    generateControllerConfig_gamecube(system, playersControllers,rom)               # Pass ROM name to allow for per ROM configuration
+    generateControllerConfig_arcade(system, playersControllers,rom)               # Pass ROM name to allow for per ROM configuration
 
-def generateControllerConfig_gamecube(system, playersControllers,rom):
+def generateControllerConfig_arcade(system, playersControllers,rom):
     # Exclude Buttons/Y from mapping as that just resets the system. Buttons/Z is used to insert credit. Therefore it is set to Select.
-    gamecubeMapping = {
-        'y':            'Buttons/B',     'b':             'Buttons/A',
-        'a':            'Buttons/X',
-        'select':     'Buttons/Z',     'start':         'Buttons/Start',
-        'l2':           'Triggers/L',    'r2':            'Triggers/R',
-        'up': 'D-Pad/Up', 'down': 'D-Pad/Down', 'left': 'D-Pad/Left', 'right': 'D-Pad/Right',
-        'joystick1up':  'Main Stick/Up', 'joystick1left': 'Main Stick/Left',
-        'joystick2up':  'C-Stick/Up',    'joystick2left': 'C-Stick/Left',
-        'hotkey':       'Buttons/Hotkey'
+    arcadeMapping = {
+        'y':             'Buttons/B',
+        'b':             'Buttons/A',
+        'a':             'Buttons/X',
+        'x':             'Buttons/Y',
+        'start':         'Buttons/Start',
+        'select':        'Buttons/Z',
+        'l2':            'Triggers/L',
+        'r2':            'Triggers/R',
+        'up':            'D-Pad/Up',
+        'down':          'D-Pad/Down',
+        'left':          'D-Pad/Left',
+        'right':         'D-Pad/Right',
+        'joystick1up':   'Main Stick/Up',
+        'joystick1left': 'Main Stick/Left',
+        'joystick2up':   'C-Stick/Up',
+        'joystick2left': 'C-Stick/Left',
+        'hotkey':        'Buttons/Hotkey'
     }
-    gamecubeReverseAxes = {
+    arcadeReverseAxes = {
         'Main Stick/Up':   'Main Stick/Down',
         'Main Stick/Left': 'Main Stick/Right',
         'C-Stick/Up':      'C-Stick/Down',
         'C-Stick/Left':    'C-Stick/Right'
     }
     # If joystick1up is missing on the pad, use up instead, and if l2/r2 is missing, use l1/r1
-    gamecubeReplacements = {
+    arcadeReplacements = {
         'joystick1up':    'up',
         'joystick1left':  'left',
         'joystick1down':  'down',
@@ -55,28 +64,32 @@ def generateControllerConfig_gamecube(system, playersControllers,rom):
             while line:
                 entry = "{" + line + "}"
                 res = ast.literal_eval(entry)
-                gamecubeMapping.update(res)
+                arcadeMapping.update(res)
                 line = cconfig.readline()
 
-    generateControllerConfig_any(system, playersControllers, "Config/GCPadNew.ini", "GCPad", gamecubeMapping, gamecubeReverseAxes, gamecubeReplacements)
-
-def removeControllerConfig_gamecube():
-    configFileName = "{}/{}".format(batoceraFiles.dolphinTriforceConfig, "Config/GCPadNew.ini")
-    if os.path.isfile(configFileName):
-        os.remove(configFileName)
+    generateControllerConfig_any(system, playersControllers, "Config/GCPadNew.ini", "GCPad", arcadeMapping, arcadeReverseAxes, arcadeReplacements)
 
 def generateHotkeys(playersControllers):
     configFileName = "{}/{}".format(batoceraFiles.dolphinTriforceConfig, "Config/Hotkeys.ini")
     f = codecs.open(configFileName, "w", encoding="utf_8")
 
     hotkeysMapping = {
-        'a':           'Keys/Reset',                    'b': 'Keys/Toggle Pause',
-        'x':           'Keys/Load from selected slot',  'y': 'Keys/Save to selected slot',
-        'r2':          None,                            'start': 'Keys/Exit',
-        'pageup': 'Keys/Take Screenshot', 'pagedown': 'Keys/Toggle 3D Side-by-side',
-        'up': 'Keys/Select State Slot 1', 'down': 'Keys/Select State Slot 2', 'left': None, 'right': None,
-        'joystick1up': None,    'joystick1left': None,
-        'joystick2up': None,    'joystick2left': None
+        'a':             'Keys/Reset',
+        'b':             'Keys/Toggle Pause',
+        'x':             'Keys/Load from selected slot',
+        'y':             'Keys/Save to selected slot',
+        'r2':            None,
+        'start':         'Keys/Exit',
+        'pageup':        'Keys/Take Screenshot',
+        'pagedown':      'Keys/Toggle 3D Side-by-side',
+        'up':            'Keys/Select State Slot 1',
+        'down':          'Keys/Select State Slot 2',
+        'left':          None,
+        'right':         None,
+        'joystick1up':   None,
+        'joystick1left': None,
+        'joystick2up':   None,
+        'joystick2left': None
     }
 
     nplayer = 1
@@ -104,9 +117,6 @@ def generateHotkeys(playersControllers):
                 # Write the configuration for this key
                 if keyname is not None:
                     write_key(f, keyname, input.type, input.id, input.value, pad.nbaxes, False, hotkey.id)
-                    
-                #else:
-                #    f.write("# undefined key: name="+input.name+", type="+input.type+", id="+str(input.id)+", value="+str(input.value)+"\n")
 
         nplayer += 1
 
@@ -133,7 +143,7 @@ def generateControllerConfig_any(system, playersControllers, filename, anyDefKey
         f.write("[" + anyDefKey + str(nplayer) + "]" + "\n")
         f.write("Device = SDL/" + str(nsamepad).strip() + "/" + pad.realName.strip() + "\n")
 
-        if system.isOptSet("use_pad_profiles") and system.getOptBoolean("use_pad_profiles") == True:
+        if system.isOptSet("triforce_pad_profiles") and system.getOptBoolean("triforce_pad_profiles") == True:
             if not generateControllerConfig_any_from_profiles(f, pad):
                 generateControllerConfig_any_auto(f, pad, anyMapping, anyReverseAxes, anyReplacements, extraOptions, system)
         else:
@@ -172,18 +182,21 @@ def generateControllerConfig_any_auto(f, pad, anyMapping, anyReverseAxes, anyRep
     
         # Write the configuration for this key
         if keyname is not None:
-            write_key(f, keyname, input.type, input.id, input.value, pad.nbaxes, False, None)
             if 'Triggers' in keyname and input.type == 'axis':
                 write_key(f, keyname + '-Analog', input.type, input.id, input.value, pad.nbaxes, False, None)
+            else:
+                write_key(f, keyname, input.type, input.id, input.value, pad.nbaxes, False, None)
         # Write the 2nd part
         if input.name in { "joystick1up", "joystick1left", "joystick2up", "joystick2left"} and keyname is not None:
             write_key(f, anyReverseAxes[keyname], input.type, input.id, input.value, pad.nbaxes, True, None)
         # Rumble option
-        if system.isOptSet("rumble") and system.getOptBoolean("rumble") == True:
-            f.write("Rumble/Motor = Weak\n")
+        if system.isOptSet("triforce_rumble"):
+            f.write(f"Rumble/Motor = {system.config['triforce_rumble']}\n")
+        else:
+            f.write("Rumble/Motor = \n")
 
 def generateControllerConfig_any_from_profiles(f, pad):
-    for profileFile in glob.glob("/userdata/system/configs/dolphin-triforce/Config/Profiles/GCPad/*.ini"):
+    for profileFile in glob.glob(batoceraFiles.dolphinTriforceConfig + "/Config/Profiles/GCPad/*.ini"):
         try:
             eslog.debug(f"Looking profile : {profileFile}")
             profileConfig = configparser.ConfigParser(interpolation=None)
@@ -214,15 +227,20 @@ def write_key(f, keyname, input_type, input_id, input_value, input_global_id, re
     if input_type == "button":
         f.write("Button " + str(input_id))
     elif input_type == "hat":
-        if input_value == "1":        # up
+        if input_value == "1":   # up
             f.write("Hat 0 N")
         elif input_value == "4": # down
             f.write("Hat 0 S")
         elif input_value == "8": # left
             f.write("Hat 0 W")
+        elif input_value == "2": # right
+            f.write("Hat 0 E")   
     elif input_type == "axis":
-        if (reverse and input_value == "-1") or (not reverse and input_value == "1"):
-            f.write("Axis " + str(input_id) + "+")
+        if (reverse and input_value == "-1") or (not reverse and input_value == "1") or (not reverse and input_value == "0"):
+            if "-Analog" in keyname:
+                f.write("Full Axis " + str(input_id) + "+")
+            else:
+                f.write("Axis " + str(input_id) + "+")
         else:
             f.write("Axis " + str(input_id) + "-")
     f.write("`\n")

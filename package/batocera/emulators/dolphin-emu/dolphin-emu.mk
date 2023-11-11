@@ -13,6 +13,8 @@ DOLPHIN_EMU_SUPPORTS_IN_SOURCE_BUILD = NO
 
 DOLPHIN_EMU_DEPENDENCIES = libevdev ffmpeg zlib libpng lzo libusb libcurl
 DOLPHIN_EMU_DEPENDENCIES += bluez5_utils hidapi xz host-xz sdl2
+# add dolphin-triforce as a dependency so it builds first
+DOLPHIN_EMU_DEPENDENCIES += dolphin-triforce
 
 DOLPHIN_EMU_CONF_OPTS  = -DCMAKE_BUILD_TYPE=Release
 DOLPHIN_EMU_CONF_OPTS += -DBUILD_SHARED_LIBS=OFF
@@ -54,6 +56,15 @@ define DOLPHIN_EMU_EVMAPY
         $(TARGET_DIR)/usr/share/evmapy
 endef
 
+define DOLPHIN_EMU_RM_NOGUI
+	rm $(TARGET_DIR)/usr/bin/dolphin-emu-nogui
+endef
+
 DOLPHIN_EMU_POST_INSTALL_TARGET_HOOKS = DOLPHIN_EMU_EVMAPY
+
+# remove no-gui binary to save space for x86 builds that use QT
+ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_X86_64_ANY),y)
+    DOLPHIN_EMU_POST_INSTALL_TARGET_HOOKS += DOLPHIN_EMU_RM_NOGUI
+endif
 
 $(eval $(cmake-package))
