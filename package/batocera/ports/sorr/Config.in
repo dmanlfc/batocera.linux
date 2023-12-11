@@ -1,0 +1,7 @@
+config BR2_PACKAGE_SORR
+	bool "sorr"
+	help
+	  Bennu Game Development 2 engine to support
+	  the Streets Of Rage Remake.
+
+	  https://github.com/SplinterGU/BennuGD2
