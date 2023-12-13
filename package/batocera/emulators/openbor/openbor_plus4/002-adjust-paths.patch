@@ -1,0 +1,22 @@
+diff --git a/engine/sdl/sdlport.c b/engine/sdl/sdlport.c
+index ed307971fd..a4b6297022 100644
+--- a/engine/sdl/sdlport.c
++++ b/engine/sdl/sdlport.c
+@@ -50,12 +50,12 @@ SYS_PROCESS_PARAM_OPENBOR(1001, 0x00100000)
+ 
+ char packfile[MAX_FILENAME_LEN] = {"bor.pak"};
+ //#if ANDROID || PS3
+-char rootDir[MAX_BUFFER_LEN] = {""};
++char rootDir[MAX_BUFFER_LEN] = {"/userdata/roms/openbor"};
+ //#endif
+-char paksDir[MAX_FILENAME_LEN] = {"Paks"};
+-char savesDir[MAX_FILENAME_LEN] = {"Saves"};
+-char logsDir[MAX_FILENAME_LEN] = {"Logs"};
+-char screenShotsDir[MAX_FILENAME_LEN] = {"ScreenShots"};
++char paksDir[MAX_FILENAME_LEN] = {"/userdata/roms/openbor"};
++char savesDir[MAX_FILENAME_LEN] = {"/userdata/saves/openbor"};
++char logsDir[MAX_FILENAME_LEN] = {"/userdata/system/logs"};
++char screenShotsDir[MAX_FILENAME_LEN] = {"/userdata/screenshots/openbor"};
+ 
+ // sleeps for the given number of microseconds
+ #if _POSIX_C_SOURCE >= 199309L

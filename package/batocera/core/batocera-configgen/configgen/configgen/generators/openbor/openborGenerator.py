@@ -72,6 +72,8 @@ class OpenborGenerator(Generator):
             commandArray = ["OpenBOR6412", rom]
         elif core == "openbor7142":
             commandArray = ["OpenBOR7142", rom]
+        elif core == "openbor_plus4":
+            commandArray = ["OpenBOR_Plus4", rom]
         else:
             commandArray = ["OpenBOR7142", rom]
         return Command.Command(array=commandArray)
