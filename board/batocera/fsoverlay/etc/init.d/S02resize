@@ -113,12 +113,12 @@ if grep -qE '^[ ]*autoresize[ ]*=[ ]*true[ ]*$' "${BOOTCONF}"; then
     case $i in
         1)
             # check for a GPT partition
-            if [ "${TABLETYPE}" = "gpt" ]; then
+            if [ "${TABLETYPE}" = "gpt" ] && "$FORMAT_ALLOWED" = true; then
                 # move backup GPT data structures to the end of the disk
                 echo "Step $i: Moving 2nd GPT table to the end of the disk" >> "$LOG"
                 textoutput $i 10 "sgdisk -e ${DISK}"
             else
-                echo "Step $i: Skipping GPT table move, disk is not GPT" >> "$LOG"
+                echo "Step $i: Skipping GPT table move, disk is either already resized or not GPT" >> "$LOG"
                 textoutput $i 10 ""
             fi
             ;;
@@ -133,8 +133,7 @@ if grep -qE '^[ ]*autoresize[ ]*=[ ]*true[ ]*$' "${BOOTCONF}"; then
             textoutput $i 40 "partprobe ${DISK}"
             ;;
         7)
-            if test "${PARTTYPE}" = "ext4" && "$FORMAT_ALLOWED" = true
-            then
+            if [ "${PARTTYPE}" = "ext4" ] && [ "$FORMAT_ALLOWED" = true ]; then
                 echo "Step $i: Formatting the ext4 file system" >> "$LOG"
                 textoutput $i 60 "mkfs.ext4 -L SHARE -q -F -F ${PART}"
             else
@@ -143,9 +142,8 @@ if grep -qE '^[ ]*autoresize[ ]*=[ ]*true[ ]*$' "${BOOTCONF}"; then
             fi
             ;;
         9)
-            # check & resize the ext4 file system
-            if test "${PARTTYPE}" = "ext4"
-            then
+            # check the ext4 file system
+            if [ "${PARTTYPE}" = "ext4" ]; then
                 echo "Step $i: Checking ext4 file system" >> "$LOG"
                 textoutput $i 70 "e2fsck -f -p ${PART}"
             fi
