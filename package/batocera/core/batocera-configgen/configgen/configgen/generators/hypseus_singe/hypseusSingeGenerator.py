@@ -104,7 +104,7 @@ class HypseusSingeGenerator(Generator):
             "maddog": ["maddog", "maddog-hd", "maddog_hd"],
             "maddog2": ["maddog2", "maddog2-hd", "maddog2_hd"],
             "jack": ["jack", "samurai_jack"],
-            "johnnyrock": ["johnnyrock", "johnnyrock-hd", "johnnyrocknoir", "wsjr_hd"],
+            "johnnyrock": ["johnnyrock", "johnnyrock-hd", "johnnyrocknoir", "wsjr_hd", "wsjr-hd"],
             "pussinboots": ["pussinboots", "puss_in_boots"],
             "spacepirates": ["spacepirates", "spacepirates-hd", "space_pirates_hd"],
         }
