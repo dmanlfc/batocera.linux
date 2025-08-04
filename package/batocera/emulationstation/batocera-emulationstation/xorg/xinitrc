@@ -84,4 +84,7 @@ if [ -f "/var/tmp/intel.prime" ]; then
     fi
 fi
 
+picom --daemon --config /etc/xdg/picom/picom.conf &
+sleep 0.2
+
 openbox --config-file /etc/openbox/rc.xml --startup "emulationstation-standalone"
