@@ -30,6 +30,7 @@
 - AYN Thor initial support
 - FriendlyElec CM3588 NAS support
 - Legion Go S Controller & LED updates
+- Mangmi Air X initial support
 - New steering wheel support:
   - Logitech Formula Vibration Feedback
   - MOZA R12 V2 (Direct Drive)

@@ -1,0 +1,12 @@
+diff --git a/meson.build b/meson.build
+index d904c4f..c09bf4c 100644
+--- a/meson.build
++++ b/meson.build
+@@ -16,6 +16,7 @@ add_project_arguments('-DHAVE_ZSTD', language : 'c')
+ # Not required to build the executable,
+ # only to automatically retrieve the install dir for unit files
+ systemd = dependency('systemd', required : false)
++systemd_system_unit_dir = ''
+ if get_option('systemd-unit-prefix') != ''
+   systemd_system_unit_dir = get_option('systemd-unit-prefix')
+ elif systemd.found()

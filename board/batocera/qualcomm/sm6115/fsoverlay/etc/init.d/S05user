@@ -1,0 +1,90 @@
+#!/bin/sh
+
+LOG_FILE="/var/log/qcomm.log"
+PD_MAPPER_LOG="/var/log/pd-mapper.log"
+TQFTPSERV_LOG="/var/log/tqftpserv.log"
+RMTFS_LOG="/var/log/rmtfs.log"
+
+mkdir -p "$(dirname "$LOG_FILE")"
+
+log_msg() {
+    echo "[$(date '+%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
+}
+
+setup_block_by_name() {
+    log_msg "--- Setting up /dev/block/by-name ---"
+    mkdir -p /dev/block/by-name
+    for uevent in /sys/class/block/*/uevent; do
+        PARTNAME=$(grep "^PARTNAME=" "$uevent" | cut -d= -f2)
+        [ -z "$PARTNAME" ] && continue
+        DEVNAME=$(grep "^DEVNAME=" "$uevent" | cut -d= -f2)
+        [ -z "$DEVNAME" ] && continue
+        ln -sf "/dev/$DEVNAME" "/dev/block/by-name/$PARTNAME"
+    done
+    log_msg "  done ($(ls /dev/block/by-name | wc -l) partitions linked)"
+}
+
+_do_start() {
+    log_msg "=== Starting Qualcomm Stack ==="
+
+    setup_block_by_name
+
+    log_msg "Starting pd-mapper..."
+    cat > /tmp/pd-mapper-run.sh <<EOF
+#!/bin/sh
+exec /usr/bin/pd-mapper >> "$PD_MAPPER_LOG" 2>&1
+EOF
+    chmod +x /tmp/pd-mapper-run.sh
+    start-stop-daemon -S -b -m -p /var/run/pd-mapper.pid --exec /tmp/pd-mapper-run.sh
+
+    log_msg "Starting rmtfs..."
+    mkdir -p /var/lib/rmtfs
+    cat > /tmp/rmtfs-run.sh <<EOF
+#!/bin/sh
+exec /usr/bin/rmtfs -v -P -s >> "$RMTFS_LOG" 2>&1
+EOF
+    chmod +x /tmp/rmtfs-run.sh
+    start-stop-daemon -S -b -m -p /var/run/rmtfs.pid --exec /tmp/rmtfs-run.sh
+
+    log_msg "Starting tqftpserv..."
+    mkdir -p /tmp/tqftpserv
+    chmod 777 /tmp/tqftpserv
+    cat > /tmp/tqftpserv-run.sh <<EOF
+#!/bin/sh
+exec /usr/bin/tqftpserv -d >> "$TQFTPSERV_LOG" 2>&1
+EOF
+    chmod +x /tmp/tqftpserv-run.sh
+    start-stop-daemon -S -b -m -p /var/run/tqftpserv.pid --exec /tmp/tqftpserv-run.sh
+
+    log_msg "Stack fully started."
+    sleep 2
+    qrtr-lookup >> "$LOG_FILE"
+}
+
+start_services() {
+    _do_start >> "$LOG_FILE" 2>&1 &
+    echo $! > /var/run/qcomm-bg.pid
+    log_msg "Qualcomm stack backgrounded (pid $!)"
+}
+
+stop_services() {
+    log_msg "Stopping services..."
+    start-stop-daemon -K -q -p /var/run/tqftpserv.pid
+    start-stop-daemon -K -q -p /var/run/pd-mapper.pid
+    start-stop-daemon -K -q -p /var/run/rmtfs.pid
+    
+    # Force kill any leftovers
+    killall tqftpserv pd-mapper rmtfs 2>/dev/null
+    
+    rm -f /var/run/tqftpserv.pid /var/run/pd-mapper.pid \
+          /var/run/rmtfs.pid /var/run/qcomm-bg.pid
+    
+    log_msg "Services stopped."
+}
+
+case "$1" in
+    start)   start_services ;;
+    stop)    stop_services ;;
+    restart|reload) $0 stop; sleep 2; $0 start ;;
+    *)       echo "Usage: $0 {start|stop|restart}"; exit 1 ;;
+esac
