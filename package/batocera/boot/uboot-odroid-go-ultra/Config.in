@@ -1,0 +1,4 @@
+config BR2_PACKAGE_UBOOT_ODROID_GO_ULTRA
+    bool "uboot-odroid-go-ultra"
+    help
+        uboot build package for the Odroid-Go Ultra
