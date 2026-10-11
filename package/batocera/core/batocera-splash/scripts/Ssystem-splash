@@ -127,7 +127,8 @@ draw_logo () {
             if { [ "${video_rotation}" = "1" ] || [ "${video_rotation}" = "3" ]; } && [ "${WIDTH}" -gt "${HEIGHT}" ]; then
                 logo_filter="scale=w=${CROP_WIDTH}:h=${CROP_HEIGHT}:force_original_aspect_ratio=decrease,pad=${CROP_WIDTH}:${CROP_HEIGHT}:(ow-iw)/2:(oh-ih)/2:black"
             fi
-            cropped_image="/tmp/boot-logo-cropped.bmp"
+            # png, not bmp: fbv reads png faster than bmp on slow devices
+            cropped_image="/tmp/boot-logo-cropped.png"
             if [ -f "${image}" ]; then
                 echo "${DAEMON} Pre-cropping logo to logical size ${CROP_WIDTH}x${CROP_HEIGHT} via FFmpeg..."
                 if ffmpeg -y -threads 1 -sws_flags fast_bilinear \
