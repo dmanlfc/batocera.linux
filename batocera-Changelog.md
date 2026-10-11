@@ -98,6 +98,7 @@
 - Raze analog controls and improved controller bindings
 - SC-3000 games not scrapable (now scraped as SG-1000)
 - Simcoupe not starting fullscreen
+- Boot logo never visible on slower devices, fbv took up to 50 s to decode the cropped BMP
 - Splash video not showing when es.resolution or splash.screen.resize holds the rotated size of a rotated display (e.g. 1080x1920)
 - Screen rotation on Wayland (labwc) going the opposite way to the boot splash and the documentation (display.rotate=1 rotated anticlockwise)
 - SM8250 devices overcharging the battery (wrong charge voltage and current), and Retroid Pocket not charging again after powering a USB-C hub or dock
